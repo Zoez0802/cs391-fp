@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Vercel
+Project Vercel link:
+```
+https://finalproject-seven-iota.vercel.app/
+```
+
 ## Necessary Packages
 After cloning this repository, run these commands in the terminal:
 ```bash
