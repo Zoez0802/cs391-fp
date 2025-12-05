@@ -1,3 +1,5 @@
+//written by Yanxi for to-do
+//written by Minjie Zuo for notes
 import { MongoClient, Db, Collection } from "mongodb";
 
 const MONGO_URI = process.env.MONGO_URI as string;
@@ -7,6 +9,8 @@ if (!MONGO_URI) {
 
 const DB_NAME = "cs391-productivity";
 export const TASKS_COLLECTION = "tasks";
+export const NOTES_COLLECTION = "notes";
+
 
 let client: MongoClient | null = null;
 let db: Db | null = null;
