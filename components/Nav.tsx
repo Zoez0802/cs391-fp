@@ -22,7 +22,7 @@ const NavLink = styled(Link)<{ $active?: boolean }>`
     background: ${({ $active }) => ($active ? "#0070f3" : "transparent")};
 `;
 
-type Props = { current?: 'home'|'notes'|'timer'|'todolist' };
+type Props = { current?: 'home'|'notes'|'timer' };
 
 export default function Nav({current='home'}:Props){
     return (
@@ -30,7 +30,6 @@ export default function Nav({current='home'}:Props){
             <NavLink href="/" $active = {current==="home"}>Dashboard</NavLink>
             <NavLink href="/notes" $active = {current==="notes"}>Notes</NavLink>
             <NavLink href="/timer" $active = {current==="timer"}>Timer</NavLink>
-            <NavLink href={"/todolist"} $active = {current==="todolist"}>To-do List</NavLink>
         </NavWrap>
     )
 }
