@@ -9,12 +9,7 @@
 
 import { useEffect, useState } from "react";
 import NoteCard from "./NoteCard";
-
-type Note = {
-    id: string;
-    text: string;
-    createdAt: string;
-};
+import { Note } from "@/types/types"
 
 export default function NotesSection() {
     const [draft, setDraft] = useState("");

@@ -86,7 +86,7 @@ type Props = {
     onUpdate: (newTitle: string) => void;
 }
 
-export default function TaskItem({ task, onToggle, onDelete, onUpdate }: Props) {
+export default function TaskItem({ task, onToggle, onDelete, onUpdate}: Props) {
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(task.title);
     const inputRef = useRef<HTMLInputElement>(null);
