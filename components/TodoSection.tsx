@@ -23,7 +23,27 @@ const Input = styled.input`
     flex: 1;
     padding: 8px;
     border-radius: 6px;
-    border: 1px solid whitesmoke;
+    border: 1px solid black;
+    color: black;
+    resize: none;
+    overflow-y: auto;
+    min-height: 40px;
+    max-height: 120px;
+`;
+
+const AddButton = styled.button`
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    
+    &:hover {
+        background-color: #0b7dda;
+    }
 `;
 
 export default function TodoSection(){
@@ -46,7 +66,7 @@ export default function TodoSection(){
         const newTask: Task = {
             title: input.trim(),
             done: false,
-            id: ""
+            id: crypto.randomUUID()
         };
         const res = await fetch("/api/tasks", {
             method: "POST",
@@ -88,13 +108,14 @@ export default function TodoSection(){
 
     return(
         <Wrapper>
-            <h2>To-Do List</h2>
+            <h2 className={"text-2xl font-bold text-slate-900 mb-3"}>To-Do List</h2>
             <AddRow>
                 <Input
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                />
-                <button onClick={addTask}>Add</button>
+                    placeholder="Add a task..."
+                    maxLength={50}
+                    onChange={(e) => setInput(e.target.value)} />
+                <AddButton onClick={addTask}>Add</AddButton>
             </AddRow>
 
             {tasks.map((task) => (

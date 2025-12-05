@@ -88,27 +88,7 @@ export default function Timer() {
     const isZero = timeMs === 0;
 
     // Keyboard shortcuts: Space = start/pause, R = reset
-    useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if (e.code === "Space") {
-                e.preventDefault();
-                setRunning((prev) => !prev);
-            }
 
-            if (e.key.toLowerCase() === "r") {
-                setRunning(false);
-                setTimeMs(0);
-                setBaseCountdownMs(0);
-                setMode("up");
-                setHoursInput("");
-                setMinutesInput("");
-                setSecondsInput("");
-            }
-        };
-
-        window.addEventListener("keydown", handler);
-        return () => window.removeEventListener("keydown", handler);
-    }, []);
 
     const start = () => setRunning(true);
     const pause = () => setRunning(false);

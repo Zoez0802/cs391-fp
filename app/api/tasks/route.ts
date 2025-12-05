@@ -10,10 +10,10 @@ export async function GET() {
     const collection = await getCollection(TASKS_COLLECTION);
     const data = await collection.find().toArray();
     //mongodb's _id -> Task's id
-    const tasks = data.map(t => ({
-        id: t._id.toString(),
-        title: t.title,
-        done: t.done,
+    const tasks = data.map(p => ({
+        id: p._id.toHexString(),
+        title: p.title,
+        done: p.done,
     }));
     return NextResponse.json(tasks);
 }
