@@ -11,7 +11,6 @@ import Counter from "@/components/Counter";
 import BestLap from "@/components/Bestlap";
 
 const Wrapper = styled.section`
-    background: white;
     display: flex;
     flex-direction: column;
     align-items: center;
