@@ -1,3 +1,5 @@
+//author: Minjie(Zoe) Zuo
+
 "use client";
 
 type Note = {

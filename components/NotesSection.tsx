@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * NotesSection.tsx
+ * NotesSection.
+ * Author:Minjie (Zoe) Zuo
  * lets the user write short notes, save them,
  * see a list of saved notes, and delete them.
  */
@@ -106,7 +107,7 @@ export default function NotesSection() {
                 </p>
             </div>
 
-            {/* give it a two-column layout */}
+            {/* lg:flex-row: give it a two-column layout */}
             <div className="flex flex-col lg:flex-row gap-10 items-start">
                 {/* LEFT – input form */}
                 <div className="w-full lg:w-1/2"> {/*50% of the width*/}
@@ -126,7 +127,7 @@ export default function NotesSection() {
 
                         <textarea
                             id="note-textarea"
-                            className="w-full min-h-[80px] rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-40"
+                            className="w-full h-[80px] rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-40"
                             placeholder="Write something…"
                             value={draft}
                             onChange={(event) => {
@@ -143,10 +144,11 @@ export default function NotesSection() {
                             <button
                                 type="submit"
                                 disabled={draft === ""}
-                                className="inline-flex items-center justify-centerpx-4 py-2rounded-xlbg-blue-500 text-white text-xs font-medium shadow-smhover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-500 text-white text-xs font-medium shadow-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
                             >
                                 Save Note
                             </button>
+
                         </div>
                     </form>
                 </div>
