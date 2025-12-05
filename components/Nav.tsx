@@ -27,7 +27,7 @@ type Props = { current?: 'home'|'notes'|'timer' };
 export default function Nav({current='home'}:Props){
     return (
         <NavWrap>
-            <NavLink href="/" $active = {current==="home"}>To-Do</NavLink>
+            <NavLink href="/" $active = {current==="home"}>Dashboard</NavLink>
             <NavLink href="/notes" $active = {current==="notes"}>Notes</NavLink>
             <NavLink href="/timer" $active = {current==="timer"}>Timer</NavLink>
         </NavWrap>

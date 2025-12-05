@@ -11,10 +11,12 @@ const Item = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: whitesmoke;
-    margin-bottom: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid #d0d0d0;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.12);
 `;
 
 const Title = styled.span<{ $done?: boolean }>`
@@ -86,7 +88,7 @@ type Props = {
     onUpdate: (newTitle: string) => void;
 }
 
-export default function TaskItem({ task, onToggle, onDelete, onUpdate }: Props) {
+export default function TaskItem({ task, onToggle, onDelete, onUpdate}: Props) {
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(task.title);
     const inputRef = useRef<HTMLInputElement>(null);

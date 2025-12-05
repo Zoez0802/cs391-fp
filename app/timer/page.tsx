@@ -1,13 +1,13 @@
 "use client";
 
 import Nav from "@/components/Nav";
-import Timer from "@/components/Timer";
+import TimerWidget from "@/components/TimerWidget";
 
 export default function TimerPage() {
     return(
         <div>
             <Nav current="timer" />
-            <Timer />
+            <TimerWidget />
         </div>
     );
 }
