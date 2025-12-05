@@ -1,5 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Necessary Packages
+After cloning this repository, run these commands in the terminal:
+```bash
+npm install
+npm run dev
+```
+Also, make sure you .env.local file contains your mongodb's application code
+```.env.local
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/dbname
+```
+
 ## Getting Started
 
 First, run the development server:
