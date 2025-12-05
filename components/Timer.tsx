@@ -5,7 +5,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Counter from "@/components/Counter";
 import BestLap from "@/components/Bestlap";
@@ -21,7 +21,6 @@ const Wrapper = styled.section`
 const StatusText = styled.p`
     margin-bottom: 0.5rem;
     opacity: 0.8;
-    color: cadetblue;
 `;
 
 const TimeText = styled.h1<{ $running: boolean; $paused: boolean }>`
@@ -38,7 +37,6 @@ const ButtonRow = styled.div`
     display: flex;
     gap: 1rem;
     margin-top: 0.5rem;
-    color: cadetblue;
 `;
 
 const Button = styled.button`
@@ -61,8 +59,6 @@ const ModeRow = styled.div`
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    color: cadetblue;
-
 `;
 
 const SmallInput = styled.input`
@@ -71,7 +67,6 @@ const SmallInput = styled.input`
     border-radius: 4px;
     border: 1px solid #ccc;
     text-align: center;
-    color: cadetblue;
 `;
 
 const HintText = styled.p`
@@ -79,20 +74,41 @@ const HintText = styled.p`
     font-size: 0.9rem;
     opacity: 0.7;
     text-align: center;
-    color: cadetblue;
 `;
 
 export default function Timer() {
     const [timeMs, setTimeMs] = useState(0);
     const [running, setRunning] = useState(false);
     const [mode, setMode] = useState<"up" | "down">("up");
-    const [monthsInput, setMonthsInput] = useState("");
-    const [daysInput, setDaysInput] = useState("");
     const [hoursInput, setHoursInput] = useState("");
     const [minutesInput, setMinutesInput] = useState("");
+    const [secondsInput, setSecondsInput] = useState("");
     const [baseCountdownMs, setBaseCountdownMs] = useState(0);
 
     const isZero = timeMs === 0;
+
+    // Keyboard shortcuts: Space = start/pause, R = reset
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.code === "Space") {
+                e.preventDefault();
+                setRunning((prev) => !prev);
+            }
+
+            if (e.key.toLowerCase() === "r") {
+                setRunning(false);
+                setTimeMs(0);
+                setBaseCountdownMs(0);
+                setMode("up");
+                setHoursInput("");
+                setMinutesInput("");
+                setSecondsInput("");
+            }
+        };
+
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, []);
 
     const start = () => setRunning(true);
     const pause = () => setRunning(false);
@@ -101,18 +117,9 @@ export default function Timer() {
         setTimeMs(0);
         setBaseCountdownMs(0);
         setMode("up");
-        setMonthsInput("");
-        setDaysInput("");
         setHoursInput("");
         setMinutesInput("");
-    };
-
-    const handleMonthsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMonthsInput(e.target.value);
-    };
-
-    const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDaysInput(e.target.value);
+        setSecondsInput("");
     };
 
     const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,30 +130,30 @@ export default function Timer() {
         setMinutesInput(e.target.value);
     };
 
+    const handleSecondsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSecondsInput(e.target.value);
+    };
+
     const applyCountdown = () => {
-        const mo = Number(monthsInput) || 0;
-        const d = Number(daysInput) || 0;
         const h = Number(hoursInput) || 0;
         const m = Number(minutesInput) || 0;
+        const s = Number(secondsInput) || 0;
 
-        // month = 30 days, day = 24 hours
-        const totalMinutes = mo * 30 * 24 * 60 + d * 24 * 60 + h * 60 + m;
-        if (totalMinutes <= 0) return;
+        const totalSeconds = h * 3600 + m * 60 + s;
+        if (totalSeconds <= 0) return;
 
-        const totalMs = totalMinutes * 60000;
+        // normalize into H:M:S
+        const normHours = Math.floor(totalSeconds / 3600);
+        const remaining = totalSeconds % 3600;
+        const normMinutes = Math.floor(remaining / 60);
+        const normSeconds = remaining % 60;
 
-        // normalize back to Months:Days:Hrs:Mins
-        const totalDays = Math.floor(totalMs / (3600000 * 24));
-        const normMonths = Math.floor(totalDays / 30);
-        const normDays = totalDays % 30;
-        const totalHours = Math.floor(totalMs / 3600000);
-        const normHours = totalHours % 24;
-        const normMinutes = totalMinutes % 60;
-
-        setMonthsInput(normMonths.toString());
-        setDaysInput(normDays.toString());
+        // update inputs to reflect normalized values
         setHoursInput(normHours.toString());
         setMinutesInput(normMinutes.toString());
+        setSecondsInput(normSeconds.toString());
+
+        const totalMs = totalSeconds * 1000;
 
         setMode("down");
         setBaseCountdownMs(totalMs);
@@ -156,26 +163,19 @@ export default function Timer() {
 
     const displayMs = mode === "down" ? Math.max(timeMs, 0) : timeMs;
 
-    // Convert ms → Months, Days, Hours, Minutes (month = 30 days)
-    const totalMinutes = Math.floor(displayMs / 60000);
-    const totalHours = Math.floor(displayMs / 3600000);
-    const totalDays = Math.floor(displayMs / (3600000 * 24));
-    const months = Math.floor(totalDays / 30)
+    const hours = Math.floor(displayMs / 3600000)
         .toString()
         .padStart(2, "0");
 
-    const days = Math.floor(totalDays % 30)
+    const minutes = Math.floor((displayMs % 3600000) / 60000)
         .toString()
         .padStart(2, "0");
 
-    const hours = Math.floor(totalHours % 24)
-        .toString()
-        .padStart(2, "0");
-
-    const minutes = Math.floor(totalMinutes % 60)
-        .toString()
-        .padStart(2, "0");
     const seconds = Math.floor((displayMs % 60000) / 1000)
+        .toString()
+        .padStart(2, "0");
+
+    const milliseconds = Math.floor((displayMs % 1000) / 10)
         .toString()
         .padStart(2, "0");
 
@@ -184,25 +184,19 @@ export default function Timer() {
             ? Math.max(baseCountdownMs - timeMs, 0)
             : timeMs;
 
-    const eTotalMinutes = Math.floor(elapsedMs / 60000);
-    const eTotalHours = Math.floor(elapsedMs / 3600000);
-    const eTotalDays = Math.floor(elapsedMs / (3600000 * 24));
-    const eMonths = Math.floor(eTotalDays / 30)
+    const elapsedHours = Math.floor(elapsedMs / 3600000)
         .toString()
         .padStart(2, "0");
 
-    const eDays = Math.floor(eTotalDays % 30)
+    const elapsedMinutes = Math.floor((elapsedMs % 3600000) / 60000)
         .toString()
         .padStart(2, "0");
 
-    const eHours = Math.floor(eTotalHours % 24)
+    const elapsedSeconds = Math.floor((elapsedMs % 60000) / 1000)
         .toString()
         .padStart(2, "0");
 
-    const eMinutes = Math.floor(eTotalMinutes % 60)
-        .toString()
-        .padStart(2, "0");
-    const eSeconds = Math.floor((elapsedMs % 60000) / 1000)
+    const elapsedMilliseconds = Math.floor((elapsedMs % 1000) / 10)
         .toString()
         .padStart(2, "0");
 
@@ -223,11 +217,11 @@ export default function Timer() {
                 $paused={countdownFinished || (!running && !isZero)}
             >
                 {mode === "down" && baseCountdownMs > 0 ? "Countdown: " : "Stopwatch: "}
-                {months}:{days}:{hours}:{minutes}:{seconds}
+                {hours}:{minutes}:{seconds}:{milliseconds}
             </TimeText>
             {mode === "down" && baseCountdownMs > 0 && (
                 <SecondaryTimeText>
-                    Stopwatch: {eMonths}:{eDays}:{eHours}:{eMinutes}:{eSeconds}
+                    Stopwatch: {elapsedHours}:{elapsedMinutes}:{elapsedSeconds}:{elapsedMilliseconds}
                 </SecondaryTimeText>
             )}
 
@@ -255,21 +249,6 @@ export default function Timer() {
                 <SmallInput
                     type="number"
                     min="0"
-                    placeholder="Months"
-                    value={monthsInput}
-                    onChange={handleMonthsChange}
-                />
-                <SmallInput
-                    type="number"
-                    min="0"
-                    placeholder="Days"
-                    value={daysInput}
-                    onChange={handleDaysChange}
-                />
-                <SmallInput
-                    type="number"
-                    min="0"
-                    max="23"
                     placeholder="Hrs"
                     value={hoursInput}
                     onChange={handleHoursChange}
@@ -281,6 +260,14 @@ export default function Timer() {
                     placeholder="Mins"
                     value={minutesInput}
                     onChange={handleMinutesChange}
+                />
+                <SmallInput
+                    type="number"
+                    min="0"
+                    max="59"
+                    placeholder="Secs"
+                    value={secondsInput}
+                    onChange={handleSecondsChange}
                 />
                 <Button onClick={applyCountdown} disabled={running}>
                     Set Countdown
@@ -302,7 +289,8 @@ export default function Timer() {
             />
 
             <HintText>
-                Tip: Use the <strong>Start</strong>, <strong>Pause</strong>, and <strong>Reset</strong> buttons to control the timer.
+                Tip: Press <strong>Space</strong> to start/pause,{" "}
+                <strong>R</strong> to reset.
             </HintText>
         </Wrapper>
     );
