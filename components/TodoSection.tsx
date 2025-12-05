@@ -9,7 +9,6 @@ import { Task } from '../types/types';
 
 const Wrapper = styled.div`
     width: 100%;
-    background: white;
     max-width: 500px;
     margin: 0 auto;
     padding: 16px;
@@ -18,14 +17,13 @@ const AddRow = styled.div`
     display: flex;
     gap: 8px;
     margin-bottom: 12px;
-    color: black;
 `;
 
 const Input = styled.input`
     flex: 1;
     padding: 8px;
     border-radius: 6px;
-    border: 1px black;
+    border: 1px solid whitesmoke;
 `;
 
 export default function TodoSection(){
