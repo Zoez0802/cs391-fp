@@ -1,9 +1,11 @@
-import NotesSection from "@/components/NotesSection";
+import Nav from "@/components/Nav";
+import TodoSection from "@/components/TodoSection";
 
 export default function Home() {
     return (
-        <main className="min-h-screen bg-slate-50">
-            <NotesSection />
-        </main>
+        <div>
+            <Nav current="home" />
+            <TodoSection />
+        </div>
     );
 }
