@@ -18,7 +18,7 @@ interface BestLapProps {
 const BestLapText = styled.p<{ $afterDone: boolean }>`
     margin-top: 0.5rem;
     font-size: 1.1rem;
-    color: ${({ $afterDone }) => ($afterDone ? "white" : "purple")};
+    color: ${({ $afterDone }) => ($afterDone ? "cadetblue" : "purple")};
 `;
 
 export default function BestLap({ show, countdownMs, stopwatchMs, afterDone }: BestLapProps) {
