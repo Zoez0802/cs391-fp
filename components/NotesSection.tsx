@@ -2,9 +2,11 @@
 
 /**
  * NotesSection.
- * Author:Minjie (Zoe) Zuo
+ * Author: Minjie (Zoe) Zuo
  * lets the user write short notes, save them,
  * see a list of saved notes, and delete them.
+ *
+ * fixed: uses the same Mongo-backed API approach as the to-do list,
  */
 
 import { useEffect, useState } from "react";
@@ -16,85 +18,96 @@ export default function NotesSection() {
     const [notes, setNotes] = useState<Note[]>([]);
     const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
-    //I used localStorage:a browser feature in Web API
-    // Whenever the 'notes' state changes (user adds or deletes a note),
-    // this effect automatically runs and stores the updated notes array
-    // inside the browser's localStorage.
+    // Load notes from the backend (similar to TodoSection fetching /api/tasks)
     useEffect(() => {
-        try {
-            const stored = localStorage.getItem("notes");
-            if (stored !== null) {
-                const parsed = JSON.parse(stored);
-
-                if (Array.isArray(parsed)) {
-                    const loaded: Note[] = [];
-                    for (let i = 0; i < parsed.length; i++) {
-                        const item = parsed[i];
-                        //safety check
-                        if (item && typeof item.text === "string" && typeof item.createdAt === "string" && typeof item.id === "string") {
-                            loaded.push(item);
-                        }
-                    }
-                    setNotes(loaded);
+        async function fetchNotes() {
+            try {
+                const res = await fetch("/api/notes");
+                if (!res.ok) {
+                    console.error("Failed to load notes");
+                    return;
                 }
+                const data: Note[] = await res.json();
+                setNotes(data);
+            } catch (error) {
+                console.error("Could not load notes", error);
             }
-        } catch {
-            console.error("Could not read notes from localStorage");
         }
+
+        fetchNotes();
     }, []);
 
-    // whenever notes change, save them back to localStorage
-    useEffect(() => {
-        try {
-            const encoded = JSON.stringify(notes); //use stringify because localstroage only save strings
-            localStorage.setItem("notes", encoded);
-        } catch {
-            console.error("Could not save notes to localStorage");
-        }
-    }, [notes]);
-
     // add a new note
-    function handleSaveNote() {
+    async function handleSaveNote() {
         if (draft === "") {
             setInfoMessage("Please write something before saving");
             return;
         }
 
-        // simple id based on time + random
-        const id = String(Date.now()) + "-" + String(Math.random());
-        const nowString = new Date().toString();
-
+        //backend will return the real saved note (with id)
         const newNote: Note = {
-            id: id,
+            id: "",
             text: draft,
-            createdAt: nowString,
+            createdAt: new Date().toString(),
         };
 
-        const updated: Note[] = [newNote];
-        for (let i = 0; i < notes.length; i++) {
-            updated.push(notes[i]);
-        }
+        try {
+            const res = await fetch("/api/notes", {
+                method: "POST",
+                body: JSON.stringify(newNote),
+            });
 
-        setNotes(updated);
-        setDraft("");
-        setInfoMessage("Note saved!");
+            if (!res.ok) {
+                console.error("Failed to save note");
+                setInfoMessage("Could not save note. Please try again.");
+                return;
+            }
+
+            const savedNote: Note = await res.json();
+
+            // keep newest note at the top
+            setNotes([savedNote, ...notes]);
+
+            setDraft("");
+            setInfoMessage("Note saved!");
+        } catch (error) {
+            console.error("Error saving note", error);
+            setInfoMessage("Could not save note. Please try again.");
+        }
     }
 
     // delete / complete note by id
-    function handleDeleteNote(id: string) {
-        const updated: Note[] = [];
-        for (let i = 0; i < notes.length; i++) {
-            if (notes[i].id !== id) {
-                updated.push(notes[i]);
+    async function handleDeleteNote(id: string) {
+        try {
+            const res = await fetch("/api/notes", {
+                method: "DELETE",
+                body: JSON.stringify({ id }),
+            });
+
+            if (!res.ok) {
+                console.error("Failed to delete note");
+                setInfoMessage("Could not delete note. Please try again.");
+                return;
             }
+
+            const updated: Note[] = [];
+            for (let i = 0; i < notes.length; i++) {
+                if (notes[i].id !== id) {
+                    updated.push(notes[i]);
+                }
+            }
+
+            setNotes(updated);
+            setInfoMessage("Note removed.");
+        } catch (error) {
+            console.error("Error deleting note", error);
+            setInfoMessage("Could not delete note. Please try again.");
         }
-        setNotes(updated);
-        setInfoMessage("Note removed.");
     }
 
     return (
         <section className="w-full max-w-6xl mx-auto px-4 py-10">
-        {/* title */}
+            {/* title */}
             <div className="mb-6">
                 <h2 className="text-4xl font-bold text-slate-900">Notes</h2>
                 <p className="text-lg text-slate-600 mt-2">
@@ -105,10 +118,11 @@ export default function NotesSection() {
             {/* lg:flex-row: give it a two-column layout */}
             <div className="flex flex-col lg:flex-row gap-10 items-start">
                 {/* LEFT – input form */}
-                <div className="w-full lg:w-1/2"> {/*50% of the width*/}
+                <div className="w-full lg:w-1/2">
                     <form
                         onSubmit={(e) => {
-                            e.preventDefault(); {/*Stops the browser from refreshing the whole page.*/}
+                            e.preventDefault();
+                            // same behavior as before, now backed by Mongo
                             handleSaveNote();
                         }}
                         className="space-y-3"
@@ -133,7 +147,13 @@ export default function NotesSection() {
 
                         <div className="flex items-center justify-between">
                             <p className="text-sm text-slate-500">
-                                {infoMessage ? infoMessage : notes.length === 0 ? "No notes yet. Your first note will appear on the right." : `You have ${notes.length} saved note${notes.length === 1 ? "" : "s"}.`}
+                                {infoMessage
+                                    ? infoMessage
+                                    : notes.length === 0
+                                        ? "No notes yet. Your first note will appear on the right."
+                                        : `You have ${notes.length} saved note${
+                                            notes.length === 1 ? "" : "s"
+                                        }.`}
                             </p>
 
                             <button
@@ -143,11 +163,11 @@ export default function NotesSection() {
                             >
                                 Save Note
                             </button>
-
                         </div>
                     </form>
                 </div>
 
+                {/* RIGHT – list of saved notes */}
                 <div className="w-full lg:w-1/2 overflow-visible">
                     <h3 className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wide">
                         Saved Notes
