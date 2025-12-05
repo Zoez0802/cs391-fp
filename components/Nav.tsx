@@ -28,8 +28,8 @@ export default function Nav({current='home'}:Props){
     return (
         <NavWrap>
             <NavLink href="/" $active = {current==="home"}>To-Do</NavLink>
-            <NavLink href="/notes" $active = {current==="notes"}>To-Do</NavLink>
-            <NavLink href="/timer" $active = {current==="timer"}>To-Do</NavLink>
+            <NavLink href="/notes" $active = {current==="notes"}>Notes</NavLink>
+            <NavLink href="/timer" $active = {current==="timer"}>Timer</NavLink>
         </NavWrap>
     )
 }
