@@ -1,7 +1,11 @@
-"use client";
+import Nav from "@/components/Nav";
+import TodoSection from "@/components/TodoSection";
 
-import Timer from "@/components/Timer";
-
-export default function TimerPage() {
-    return <Timer />;
+export default function Home() {
+    return (
+        <div>
+            <Nav current="home" />
+            <TodoSection />
+        </div>
+    );
 }
