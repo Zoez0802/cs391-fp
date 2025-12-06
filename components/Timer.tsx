@@ -26,7 +26,7 @@ const StatusText = styled.p`
 `;
 
 const TimeText = styled.h1<{ $running: boolean; $paused: boolean }>`
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin-bottom: 2rem;
     color: ${({ $running, $paused }) => ($paused ? "red" : $running ? "green" : "black")};`;
 

@@ -10,8 +10,13 @@ import { Task } from '../types/types';
 const Wrapper = styled.div`
     width: 100%;
     max-width: 500px;
-    margin: 0 auto;
+    margin: 20px auto 0;
     padding: 16px;
+    /* This additional styling is modify by Minjie Zuo:*/
+    background-color: #fdfdfd;          
+    border-radius: 16px; // rounded card corners
+    border: 1px solid rgba(148, 163, 184, 0.4); // light grey border 
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06); // subtle shadow to lift it off the page
 `;
 const AddRow = styled.div`
     display: flex;
@@ -108,7 +113,12 @@ export default function TodoSection(){
 
     return(
         <Wrapper>
-            <h2 className={"text-2xl font-bold text-slate-900 mb-3"}>To-Do List</h2>
+            <h2 className={"text-3xl font-bold text-slate-900 mb-1"}>To-Do List</h2>
+            <hr className="mb-4 border-t border-gray-300 w-1/2" /> {/* Modify by Minjie: add for styling, subtle grey divider for consistency with Notes section */}
+            <p className="text-slate-600 mb-4">
+                Keep track of tasks, chores, or anything you need to get done :)
+            </p> {/* Modify by Minjie: add for styling*/}
+
             <AddRow>
                 <Input
                     value={input}

@@ -1,8 +1,7 @@
 "use client";
 
 /**
- * NotesSection.
- * Author: Minjie (Zoe) Zuo
+ * Created by Minjie (Zoe) Zuo
  * lets the user write short notes, save them,
  * see a list of saved notes, and delete them.
  *
@@ -65,7 +64,7 @@ export default function NotesSection() {
 
             const savedNote: Note = await res.json();
 
-            // keep newest note at the top
+            // keep most recent note at the top
             setNotes([savedNote, ...notes]);
 
             setDraft("");
@@ -106,10 +105,11 @@ export default function NotesSection() {
     }
 
     return (
-        <section className="w-full max-w-6xl mx-auto px-4 py-10">
+        <section className="w-full max-w-6xl mx-auto px-4 py-6 mt-5 bg-[#fdfdfd] border border-slate-300/40 rounded-2xl shadow-[0_8px_20px_rgba(15,23,42,0.06)]">
+
             {/* title */}
             <div className="mb-6">
-                <h2 className="text-4xl font-bold text-slate-900">Notes</h2>
+                <h2 className="text-3xl font-bold text-slate-900">Notes</h2>
                 <p className="text-lg text-slate-600 mt-2">
                     Write down quick ideas, reminders, or anything you want.
                 </p>
@@ -168,7 +168,7 @@ export default function NotesSection() {
                 </div>
 
                 {/* RIGHT – list of saved notes */}
-                <div className="w-full lg:w-1/2 overflow-visible">
+                <div className="w-full lg:w-[60%] overflow-visible">
                     <h3 className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wide">
                         Saved Notes
                     </h3>
@@ -178,7 +178,7 @@ export default function NotesSection() {
                             Your notes will appear here as little sticky notes.
                         </p>
                     ) : (
-                        <div className="flex flex-wrap gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {notes.map((note) => (
                                 <NoteCard
                                     key={note.id}
